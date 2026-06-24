@@ -112,9 +112,8 @@ const analyzeResume = async (req, res) => {
     };
 
     // 5. Save to Database
-    // Note: req.user._id comes from your authMiddleware (which we'll hook up next). 
-    // For testing purposes before auth is fully built, you can temporarily mock a fake ObjectId string if needed.
-    const userId = req.user ? req.user._id : '65f1234567890123456789ab'; 
+    // Use the authenticated user from middleware
+    const userId = req.user._id; 
 
     const newResume = new Resume({
       user: userId,
