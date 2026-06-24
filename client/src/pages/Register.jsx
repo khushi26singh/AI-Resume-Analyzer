@@ -33,63 +33,64 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
-        <p className="text-gray-600 mb-6">Sign up to start analyzing resumes</p>
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center p-4">
+      <div className="bg-white/90 backdrop-blur rounded-3xl shadow-2xl p-8 w-full max-w-md border-4 border-pink-200">
+        <div className="text-5xl text-center mb-4">🌟</div>
+        <h1 className="text-4xl font-black text-center bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">Create Account</h1>
+        <p className="text-center text-purple-600 font-semibold mb-6">Join us to start analyzing resumes! 💖</p>
 
         {(error || localError) && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg mb-4">
+          <div className="flex items-center gap-2 p-3 bg-red-100 border-2 border-red-300 rounded-2xl mb-4">
             <AlertCircle className="w-5 h-5 text-red-500" />
-            <span className="text-red-700 text-sm">{error || localError}</span>
+            <span className="text-red-700 text-sm font-semibold">{error || localError}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+            <label className="block text-sm font-bold text-purple-700 mb-2">👤 Full Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent bg-pink-50"
               placeholder="John Doe"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-bold text-purple-700 mb-2">📧 Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent bg-pink-50"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-bold text-purple-700 mb-2">🔐 Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent bg-pink-50"
               placeholder="••••••••"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
+            <label className="block text-sm font-bold text-purple-700 mb-2">✓ Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-pink-200 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent bg-pink-50"
               placeholder="••••••••"
             />
           </div>
@@ -97,7 +98,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
           >
             {loading ? (
               <>
@@ -105,15 +106,15 @@ export default function Register() {
                 Creating account...
               </>
             ) : (
-              'Sign Up'
+              '🎉 Sign Up'
             )}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6">
+        <p className="text-center text-purple-700 font-semibold mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline font-semibold">
-            Sign in
+          <Link to="/login" className="text-pink-500 hover:underline font-black">
+            Sign in here!
           </Link>
         </p>
       </div>
