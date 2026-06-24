@@ -68,18 +68,18 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       <Navbar />
 
       <div className="max-w-7xl mx-auto p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800">Dashboard</h1>
-            <p className="text-gray-600 mt-2">Welcome, {user?.name}!</p>
+            <h1 className="text-5xl font-black bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Dashboard 💖</h1>
+            <p className="text-purple-600 font-bold mt-2">Welcome back, {user?.name}! ✨</p>
           </div>
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center gap-2 transition"
+            className="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <Upload className="w-5 h-5" />
             Analyze Resume
@@ -93,56 +93,59 @@ export default function Dashboard() {
         )}
 
         {error && (
-          <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
+          <div className="flex items-center gap-2 p-4 bg-red-100 border-2 border-red-300 rounded-2xl mb-8">
             <AlertCircle className="w-5 h-5 text-red-500" />
-            <span className="text-red-700">{error}</span>
+            <span className="text-red-700 font-semibold">{error}</span>
           </div>
         )}
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader className="w-8 h-8 animate-spin text-blue-600" />
+            <Loader className="w-8 h-8 animate-spin text-purple-600" />
           </div>
         ) : resumes.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-            <Upload className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">No resumes yet</h2>
-            <p className="text-gray-600 mb-6">Upload your first resume to get started with AI analysis</p>
+          <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl shadow-lg p-12 text-center border-4 border-purple-200">
+            <div className="text-7xl mb-4">📄</div>
+            <h2 className="text-3xl font-black text-purple-900 mb-2">No resumes yet</h2>
+            <p className="text-purple-700 font-semibold mb-6">Upload your first resume to get started with AI analysis ✨</p>
             <button
               onClick={() => setShowUpload(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg"
+              className="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition"
             >
-              Upload Resume
+              Upload Resume 🚀
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-purple-200">
+                <div className="bg-gradient-to-r from-purple-200 to-pink-200 p-4 font-bold text-purple-900">
+                  📁 Your Resumes
+                </div>
                 <div className="grid grid-cols-1 gap-0">
                   {resumes.map((resume, idx) => (
                     <div
                       key={resume._id}
-                      className={`p-4 border-b cursor-pointer transition ${
+                      className={`p-4 border-b-2 cursor-pointer transition ${
                         selectedResume?._id === resume._id
-                          ? 'bg-blue-50 border-l-4 border-l-blue-600'
-                          : 'hover:bg-gray-50'
+                          ? 'bg-gradient-to-r from-purple-100 to-pink-100 border-l-4 border-l-purple-600'
+                          : 'hover:bg-purple-50'
                       }`}
                       onClick={() => setSelectedResume(resume)}
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-semibold text-gray-800">{resume.fileName}</h3>
-                          <p className="text-sm text-gray-500">
+                          <h3 className="font-bold text-purple-900">📄 {resume.fileName}</h3>
+                          <p className="text-sm text-purple-600 font-semibold">
                             {new Date(resume.createdAt).toLocaleDateString()}
                           </p>
                         </div>
                         {resume.analysisReport && (
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-blue-600">
+                            <p className="text-3xl font-black bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                               {resume.analysisReport.atsScore}
                             </p>
-                            <p className="text-xs text-gray-500">ATS Score</p>
+                            <p className="text-xs text-purple-600 font-bold">ATS Score</p>
                           </div>
                         )}
                       </div>
@@ -153,53 +156,53 @@ export default function Dashboard() {
             </div>
 
             {selectedResume && (
-              <div className="bg-white rounded-lg shadow-lg p-6 h-fit">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Analysis Details</h2>
+              <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl shadow-xl p-6 h-fit border-4 border-pink-200">
+                <h2 className="text-2xl font-black text-purple-900 mb-4">✨ Analysis Details</h2>
 
                 {selectedResume.analysisReport ? (
                   <div className="space-y-4">
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">ATS Score</p>
-                      <p className="text-3xl font-bold text-blue-600">
+                    <div className="bg-gradient-to-br from-yellow-200 to-orange-200 p-4 rounded-2xl shadow">
+                      <p className="text-sm text-orange-700 font-bold">🎯 ATS Score</p>
+                      <p className="text-4xl font-black text-orange-600">
                         {selectedResume.analysisReport.atsScore}
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-800 mb-2">Summary</h3>
-                      <p className="text-gray-700 text-sm">
+                      <h3 className="font-black text-purple-900 mb-2">📝 Summary</h3>
+                      <p className="text-purple-700 text-sm font-semibold">
                         {selectedResume.analysisReport.summary}
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-800 mb-2">Strengths</h3>
+                      <h3 className="font-black text-green-700 mb-2">✅ Strengths</h3>
                       <ul className="space-y-1">
                         {selectedResume.analysisReport.strengths?.slice(0, 3).map((s, i) => (
-                          <li key={i} className="text-sm text-green-700">• {s}</li>
+                          <li key={i} className="text-sm text-green-700 font-semibold">💚 {s}</li>
                         ))}
                       </ul>
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-800 mb-2">Improvements</h3>
+                      <h3 className="font-black text-blue-700 mb-2">🚀 Improvements</h3>
                       <ul className="space-y-1">
                         {selectedResume.analysisReport.improvements?.slice(0, 3).map((imp, i) => (
-                          <li key={i} className="text-sm text-blue-700">• {imp}</li>
+                          <li key={i} className="text-sm text-blue-700 font-semibold">💙 {imp}</li>
                         ))}
                       </ul>
                     </div>
 
                     <button
                       onClick={() => handleDelete(selectedResume._id)}
-                      className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition mt-4"
+                      className="w-full bg-red-300 hover:bg-red-400 text-red-900 font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow mt-4"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Delete
+                      Delete Resume
                     </button>
                   </div>
                 ) : (
-                  <p className="text-gray-600 text-sm">No analysis data available</p>
+                  <p className="text-purple-700 text-sm font-semibold">No analysis data available</p>
                 )}
               </div>
             )}
