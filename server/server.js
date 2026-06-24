@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const analyzeRoutes = require('./routes/analyzeRoutes');
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use('/api/analyze', analyzeRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
