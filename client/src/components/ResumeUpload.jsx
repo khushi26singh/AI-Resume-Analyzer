@@ -10,7 +10,7 @@ export default function ResumeUpload({ onSuccess, onCancel }) {
   const [error, setError] = useState(null)
   const { token } = useContext(AuthContext)
 
-  const API_BASE_URL = 'http://localhost:5000'
+  const API_BASE_URL = ''
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]

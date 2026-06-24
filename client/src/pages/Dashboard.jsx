@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [selectedResume, setSelectedResume] = useState(null)
   const [showUpload, setShowUpload] = useState(false)
 
-  const API_BASE_URL = 'http://localhost:5000'
+  const API_BASE_URL = ''
 
   useEffect(() => {
     if (!user) {
