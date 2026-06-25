@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
-import { Zap, BarChart3, Shield, ArrowRight } from 'lucide-react'
+import { Zap, BarChart3, Shield, ArrowRight, Upload } from 'lucide-react'
 
 export default function Home() {
   const { user, token } = useContext(AuthContext)
@@ -9,114 +9,165 @@ export default function Home() {
 
   if (user && token) {
     navigate('/dashboard')
+    return null
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
+    <div className="min-h-screen bg-[#0D0D12] text-slate-200">
+
       {/* Navbar */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-lg border-b-4 border-purple-200">
-        <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-300 to-purple-400 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">✨</span>
+      <nav className="sticky top-0 z-50 bg-[#0D0D12]/80 backdrop-blur-md border-b border-purple-950">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-purple-950 border border-purple-700 rounded-lg flex items-center justify-center">
+              <span className="text-purple-400 text-xs font-bold">iR</span>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Resume Analyzer</h1>
+            <span className="font-bold text-base text-purple-200 tracking-tight">
+              i<span className="text-purple-500">Resume</span>
+            </span>
           </div>
-          <div className="flex gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/login')}
-              className="text-purple-600 hover:text-purple-700 font-bold px-4 py-2 rounded-full hover:bg-purple-100 transition"
+              className="text-sm text-slate-400 hover:text-slate-200 px-4 py-2 rounded-lg hover:bg-purple-950/40 transition-colors font-medium"
             >
-              Sign In
+              Sign in
             </button>
             <button
               onClick={() => navigate('/register')}
-              className="bg-gradient-to-r from-pink-300 to-purple-300 hover:from-pink-400 hover:to-purple-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition"
+              className="text-sm bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-purple-100 font-semibold px-4 py-2 rounded-lg transition-all shadow-[0_0_16px_rgba(124,58,237,0.2)]"
             >
-              Sign Up
+              Get started
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-8 py-20">
-        <div className="text-center mb-16">
-          <div className="text-6xl mb-4">🌸</div>
-          <h1 className="text-6xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent mb-4">
-            Your Resume, Perfected with AI ✨
+      {/* Hero */}
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center relative">
+        {/* Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-purple-900/20 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-950/60 border border-purple-800/50 rounded-full text-xs text-purple-300 font-medium mb-8">
+            <span className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+            Powered by Gemini AI
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl font-bold text-slate-100 leading-tight mb-6 tracking-tight">
+            Your resume,{' '}
+            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+              ATS-optimized
+            </span>
           </h1>
-          <p className="text-xl text-purple-700 font-semibold mb-8">
-            💫 Get instant, AI-powered feedback on your resume<br/>
-            🎯 Improve your ATS score and land more interviews
+
+          <p className="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed mb-10">
+            Upload your resume and get an instant AI-powered score with keyword suggestions,
+            strengths analysis, and actionable improvements.
           </p>
-          <div className="flex gap-4 justify-center">
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => navigate('/register')}
-              className="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white font-bold py-4 px-10 rounded-full flex items-center gap-2 shadow-xl hover:shadow-2xl transition transform hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-purple-100 font-semibold py-3 px-8 rounded-lg transition-all text-sm shadow-[0_0_24px_rgba(124,58,237,0.3)]"
             >
-              Get Started 🚀 <ArrowRight className="w-5 h-5" />
+              Analyze your resume
+              <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => navigate('/login')}
-              className="bg-gradient-to-r from-purple-200 to-blue-200 hover:from-purple-300 hover:to-blue-300 text-purple-700 font-bold py-4 px-10 rounded-full hover:shadow-lg transition transform hover:scale-105"
+              className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 border border-purple-900/40 hover:border-purple-700 px-8 py-3 rounded-lg transition-all"
             >
-              Sign In 💕
+              Sign in
             </button>
           </div>
         </div>
+      </section>
 
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12">
-          <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-3xl shadow-lg p-8 hover:shadow-2xl transition transform hover:scale-105">
-            <div className="text-5xl mb-4">⚡</div>
-            <h3 className="text-2xl font-bold text-yellow-900 mb-2">Instant Analysis</h3>
-            <p className="text-yellow-800 font-semibold">Get real-time AI analysis with detailed feedback and suggestions.</p>
-          </div>
+      {/* Stats strip */}
+      <section className="border-y border-purple-950">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-3 gap-6 text-center">
+          {[
+            { value: '94%', label: 'Average score lift' },
+            { value: '< 2s', label: 'Analysis time' },
+            { value: '12k+', label: 'Resumes analyzed' },
+          ].map(({ value, label }) => (
+            <div key={label}>
+              <p className="text-3xl font-bold text-purple-200">{value}</p>
+              <p className="text-xs text-slate-500 mt-1">{label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          <div className="bg-gradient-to-br from-pink-100 to-pink-200 rounded-3xl shadow-lg p-8 hover:shadow-2xl transition transform hover:scale-105">
-            <div className="text-5xl mb-4">📊</div>
-            <h3 className="text-2xl font-bold text-pink-900 mb-2">ATS Score</h3>
-            <p className="text-pink-800 font-semibold">Check your compatibility score instantly with detailed breakdown.</p>
-          </div>
+      {/* Features */}
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <h2 className="text-2xl font-bold text-slate-100 text-center mb-12">Everything you need to get hired faster</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: <Zap className="w-5 h-5 text-purple-400" />,
+              title: 'Instant analysis',
+              desc: 'Get real-time AI feedback with a full breakdown in under two seconds — no waiting, no queues.',
+            },
+            {
+              icon: <BarChart3 className="w-5 h-5 text-purple-400" />,
+              title: 'ATS score',
+              desc: 'See exactly how your resume performs against Applicant Tracking Systems with a 0–100 compatibility score.',
+            },
+            {
+              icon: <Shield className="w-5 h-5 text-purple-400" />,
+              title: 'Secure & private',
+              desc: 'Your documents are stored with encryption and are only ever accessible by you.',
+            },
+          ].map(({ icon, title, desc }) => (
+            <div key={title} className="bg-[#1a1625] border border-purple-900/20 rounded-xl p-6">
+              <div className="w-9 h-9 bg-purple-950 border border-purple-800/50 rounded-lg flex items-center justify-center mb-4">
+                {icon}
+              </div>
+              <h3 className="text-base font-semibold text-slate-200 mb-2">{title}</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl shadow-lg p-8 hover:shadow-2xl transition transform hover:scale-105">
-            <div className="text-5xl mb-4">🔒</div>
-            <h3 className="text-2xl font-bold text-blue-900 mb-2">Secure & Private</h3>
-            <p className="text-blue-800 font-semibold">Your resumes are encrypted and only accessible by you.</p>
+      {/* How it works */}
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl p-10 sm:p-14">
+          <h2 className="text-2xl font-bold text-slate-100 text-center mb-12">How it works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {[
+              { step: '01', title: 'Upload your resume', desc: 'Drag and drop or browse for a PDF or DOCX file.' },
+              { step: '02', title: 'AI analysis runs', desc: 'Gemini reads your resume and scores it against ATS patterns.' },
+              { step: '03', title: 'Act on feedback', desc: 'Get a detailed report with keywords, strengths, and improvements.' },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-950 border border-purple-800/50 rounded-xl mb-5">
+                  <span className="text-sm font-bold text-purple-400">{step}</span>
+                </div>
+                <h3 className="text-base font-semibold text-slate-200 mb-2">{title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* How it works */}
-        <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-3xl shadow-xl p-12 mt-12 border-4 border-purple-200">
-          <h2 className="text-4xl font-black text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-12">How it Works ✨</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-400 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                1️⃣
-              </div>
-              <h3 className="text-xl font-bold text-purple-900 mb-2">Upload Resume</h3>
-              <p className="text-purple-700 font-semibold">Upload your resume in PDF, DOC, or DOCX format</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-400 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                2️⃣
-              </div>
-              <h3 className="text-xl font-bold text-purple-900 mb-2">AI Analysis</h3>
-              <p className="text-purple-700 font-semibold">Our AI analyzes your resume and generates insights</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                3️⃣
-              </div>
-              <h3 className="text-xl font-bold text-purple-900 mb-2">Get Feedback</h3>
-              <p className="text-purple-700 font-semibold">Receive detailed feedback and actionable recommendations</p>
-            </div>
-          </div>
+      {/* CTA footer */}
+      <section className="border-t border-purple-950">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <h2 className="text-2xl font-bold text-slate-100 mb-3">Ready to improve your resume?</h2>
+          <p className="text-sm text-slate-500 mb-8">Join thousands of job seekers already using iResume.</p>
+          <button
+            onClick={() => navigate('/register')}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-purple-100 font-semibold py-3 px-8 rounded-lg transition-all text-sm shadow-[0_0_24px_rgba(124,58,237,0.3)]"
+          >
+            <Upload className="w-4 h-4" />
+            Get started free
+          </button>
         </div>
-      </div>
+      </section>
     </div>
   )
 }

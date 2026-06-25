@@ -1,10 +1,86 @@
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
-import { Upload, Trash2, Loader, AlertCircle } from 'lucide-react'
+import { Upload, Trash2, Loader, AlertCircle, FileText, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import ResumeUpload from '../components/ResumeUpload'
 
+/* ── Score ring ─────────────────────────────────────────── */
+function ScoreRing({ score }) {
+  const radius = 52
+  const circ = 2 * Math.PI * radius
+  const offset = circ - (score / 100) * circ
+  const isHigh = score >= 75
+  const isMid = score >= 50
+  const color = isHigh ? '#a855f7' : isMid ? '#f59e0b' : '#ef4444'
+  const glow = isHigh ? 'rgba(168,85,247,0.35)' : isMid ? 'rgba(245,158,11,0.35)' : 'rgba(239,68,68,0.35)'
+  const label = isHigh ? 'Strong match' : isMid ? 'Needs work' : 'Low match'
+  const labelColor = isHigh ? 'text-purple-400' : isMid ? 'text-amber-400' : 'text-red-400'
+  const bgAccent = isHigh ? 'bg-purple-950/30 border-purple-800/30' : isMid ? 'bg-amber-950/30 border-amber-800/30' : 'bg-red-950/30 border-red-800/30'
+
+  return (
+    <div className="flex flex-col items-center pt-8 pb-6 px-6">
+      {/* Ring */}
+      <div className="relative w-40 h-40 mb-5">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r={radius} fill="none" stroke="#1e0a3c" strokeWidth="9" />
+          <circle
+            cx="60" cy="60" r={radius} fill="none"
+            stroke={color} strokeWidth="9"
+            strokeDasharray={circ}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            style={{
+              transition: 'stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)',
+              filter: `drop-shadow(0 0 10px ${glow})`
+            }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-5xl font-bold text-slate-100 leading-none">{score}</span>
+          <span className="text-xs text-slate-500 mt-1.5 tracking-wide">/ 100</span>
+        </div>
+      </div>
+
+      {/* Status badge */}
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${bgAccent} ${labelColor}`}>
+        <TrendingUp className="w-3 h-3" />
+        {label}
+      </span>
+
+      <p className="text-xs text-slate-500 mt-3 text-center leading-relaxed">
+        {isHigh
+          ? 'Your resume is well-optimized for ATS systems.'
+          : isMid
+          ? 'A few targeted changes could significantly boost your score.'
+          : 'Consider a major revision to improve ATS compatibility.'}
+      </p>
+    </div>
+  )
+}
+
+/* ── Stat card ───────────────────────────────────────────── */
+function StatCard({ label, value, sub, accent }) {
+  return (
+    <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl p-6 flex flex-col gap-3 hover:border-purple-800/40 transition-colors duration-200">
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{label}</p>
+      <p className={`text-4xl font-bold leading-none ${accent || 'text-purple-200'}`}>{value}</p>
+      <p className="text-xs text-slate-500">{sub}</p>
+    </div>
+  )
+}
+
+/* ── Section card ────────────────────────────────────────── */
+function SectionCard({ title, titleColor = 'text-slate-400', borderColor = 'border-purple-900/20', children }) {
+  return (
+    <div className={`bg-[#1a1625] border ${borderColor} rounded-2xl p-6 hover:border-purple-800/30 transition-colors duration-200`}>
+      <p className={`text-[11px] font-bold ${titleColor} uppercase tracking-widest mb-4`}>{title}</p>
+      {children}
+    </div>
+  )
+}
+
+/* ── Main dashboard ──────────────────────────────────────── */
 export default function Dashboard() {
   const { user, token } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -17,26 +93,23 @@ export default function Dashboard() {
   const API_BASE_URL = ''
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login')
-      return
-    }
+    if (!user) { navigate('/login'); return }
     fetchResumes()
   }, [user, token])
 
   const fetchResumes = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`${API_BASE_URL}/api/resumes`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await fetch(`${API_BASE_URL}/api/resumes`, {
+        headers: { Authorization: `Bearer ${token}` }
       })
-      if (response.ok) {
-        const data = await response.json()
+      if (res.ok) {
+        const data = await res.json()
         setResumes(data.resumes)
       } else {
         setError('Failed to fetch resumes')
       }
-    } catch (err) {
+    } catch {
       setError('Error fetching resumes')
     } finally {
       setLoading(false)
@@ -44,20 +117,17 @@ export default function Dashboard() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this resume?')) return
-
+    if (!confirm('Delete this resume?')) return
     try {
-      const response = await fetch(`${API_BASE_URL}/api/resumes/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/resumes/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` }
       })
-      if (response.ok) {
-        setResumes(resumes.filter(r => r._id !== id))
+      if (res.ok) {
+        setResumes(prev => prev.filter(r => r._id !== id))
         setSelectedResume(null)
-      } else {
-        alert('Failed to delete resume')
       }
-    } catch (err) {
+    } catch {
       alert('Error deleting resume')
     }
   }
@@ -67,148 +137,267 @@ export default function Dashboard() {
     fetchResumes()
   }
 
+  const bestScore = resumes.length
+    ? Math.max(...resumes.map(r => r.analysisReport?.atsScore || 0))
+    : null
+
+  const report = selectedResume?.analysisReport
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-[#0D0D12] text-slate-200">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-8">
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        {/* ── Page header ── */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-5xl font-black bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Dashboard 💖</h1>
-            <p className="text-purple-600 font-bold mt-2">Welcome back, {user?.name}! ✨</p>
+            <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Dashboard</h1>
+            <p className="text-sm text-slate-500 mt-1">
+              Welcome back, <span className="text-purple-400 font-medium">{user?.name}</span>
+            </p>
           </div>
           <button
-            onClick={() => setShowUpload(!showUpload)}
-            className="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg hover:shadow-xl transform hover:scale-105"
+            onClick={() => setShowUpload(v => !v)}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 active:scale-95 text-purple-100 font-semibold py-2.5 px-5 rounded-xl transition-all duration-150 text-sm shadow-[0_0_24px_rgba(124,58,237,0.25)] hover:shadow-[0_0_32px_rgba(124,58,237,0.4)]"
           >
-            <Upload className="w-5 h-5" />
-            Analyze Resume
+            <Upload className="w-4 h-4" />
+            Analyze resume
           </button>
         </div>
 
+        {/* ── Stats row ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <StatCard label="Total analyzed" value={resumes.length} sub="resumes uploaded" />
+          <StatCard
+            label="Best ATS score"
+            value={bestScore ?? '—'}
+            sub="out of 100"
+            accent={bestScore >= 75 ? 'text-purple-300' : bestScore >= 50 ? 'text-amber-300' : 'text-slate-300'}
+          />
+          <StatCard
+            label="Latest upload"
+            value={resumes.length
+              ? new Date(resumes[0].createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+              : '—'}
+            sub={resumes.length
+              ? new Date(resumes[0].createdAt).toLocaleDateString('en-US', { weekday: 'long' })
+              : 'no uploads yet'}
+          />
+        </div>
+
+        {/* ── Upload panel ── */}
         {showUpload && (
           <div className="mb-8">
             <ResumeUpload onSuccess={handleUploadSuccess} onCancel={() => setShowUpload(false)} />
           </div>
         )}
 
+        {/* ── Error ── */}
         {error && (
-          <div className="flex items-center gap-2 p-4 bg-red-100 border-2 border-red-300 rounded-2xl mb-8">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-            <span className="text-red-700 font-semibold">{error}</span>
+          <div className="flex items-center gap-3 p-4 bg-red-950/40 border border-red-800/40 rounded-xl mb-8">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+            <span className="text-red-400 text-sm">{error}</span>
           </div>
         )}
 
+        {/* ── Loading ── */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader className="w-8 h-8 animate-spin text-purple-600" />
+          <div className="flex flex-col items-center justify-center py-32 gap-4">
+            <Loader className="w-7 h-7 animate-spin text-purple-500" />
+            <p className="text-sm text-slate-500">Loading your resumes…</p>
           </div>
+
+        /* ── Empty state ── */
         ) : resumes.length === 0 ? (
-          <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl shadow-lg p-12 text-center border-4 border-purple-200">
-            <div className="text-7xl mb-4">📄</div>
-            <h2 className="text-3xl font-black text-purple-900 mb-2">No resumes yet</h2>
-            <p className="text-purple-700 font-semibold mb-6">Upload your first resume to get started with AI analysis ✨</p>
+          <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl py-24 px-8 text-center">
+            <div className="w-16 h-16 bg-purple-950/60 border border-purple-800/40 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <FileText className="w-7 h-7 text-purple-400" />
+            </div>
+            <h2 className="text-lg font-semibold text-slate-200 mb-2">No resumes yet</h2>
+            <p className="text-sm text-slate-500 mb-8 max-w-sm mx-auto leading-relaxed">
+              Upload your first resume to get an AI-powered ATS compatibility score,
+              keyword suggestions, and actionable improvements.
+            </p>
             <button
               onClick={() => setShowUpload(true)}
-              className="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 active:scale-95 text-purple-100 font-semibold py-2.5 px-6 rounded-xl transition-all duration-150 text-sm shadow-[0_0_20px_rgba(124,58,237,0.2)]"
             >
-              Upload Resume 🚀
+              <Upload className="w-4 h-4" />
+              Upload your first resume
             </button>
           </div>
+
+        /* ── Main content ── */
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-purple-200">
-                <div className="bg-gradient-to-r from-purple-200 to-pink-200 p-4 font-bold text-purple-900">
-                  📁 Your Resumes
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+            {/* ── Left column ── */}
+            <div className="flex flex-col gap-5">
+
+              {/* Resume list */}
+              <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl overflow-hidden">
+                <div className="px-5 py-4 border-b border-purple-900/20">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Your resumes</p>
                 </div>
-                <div className="grid grid-cols-1 gap-0">
-                  {resumes.map((resume, idx) => (
-                    <div
-                      key={resume._id}
-                      className={`p-4 border-b-2 cursor-pointer transition ${
-                        selectedResume?._id === resume._id
-                          ? 'bg-gradient-to-r from-purple-100 to-pink-100 border-l-4 border-l-purple-600'
-                          : 'hover:bg-purple-50'
-                      }`}
-                      onClick={() => setSelectedResume(resume)}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-bold text-purple-900">📄 {resume.fileName}</h3>
-                          <p className="text-sm text-purple-600 font-semibold">
-                            {new Date(resume.createdAt).toLocaleDateString()}
-                          </p>
+
+                <div className="divide-y divide-[#0F0A1E]">
+                  {resumes.map((resume) => {
+                    const isSelected = selectedResume?._id === resume._id
+                    const score = resume.analysisReport?.atsScore
+                    const scoreColor = score >= 75 ? 'text-purple-400' : score >= 50 ? 'text-amber-400' : 'text-red-400'
+
+                    return (
+                      <div
+                        key={resume._id}
+                        onClick={() => setSelectedResume(resume)}
+                        className={`group flex items-center justify-between px-5 py-4 cursor-pointer transition-all duration-150 ${
+                          isSelected
+                            ? 'bg-purple-950/30 border-l-2 border-l-purple-500 pl-[18px]'
+                            : 'hover:bg-purple-950/15 border-l-2 border-l-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-150 ${
+                            isSelected ? 'bg-purple-900/50' : 'bg-purple-950/40 group-hover:bg-purple-900/40'
+                          }`}>
+                            <FileText className="w-3.5 h-3.5 text-purple-400" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-slate-200 truncate leading-tight">{resume.fileName}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {new Date(resume.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </p>
+                          </div>
                         </div>
                         {resume.analysisReport && (
-                          <div className="text-right">
-                            <p className="text-3xl font-black bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                              {resume.analysisReport.atsScore}
-                            </p>
-                            <p className="text-xs text-purple-600 font-bold">ATS Score</p>
+                          <div className="shrink-0 ml-4 text-right">
+                            <p className={`text-lg font-bold leading-none ${scoreColor}`}>{score}</p>
+                            <p className="text-[10px] text-slate-600 mt-0.5 uppercase tracking-wide">ATS</p>
                           </div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
-            </div>
 
-            {selectedResume && (
-              <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl shadow-xl p-6 h-fit border-4 border-pink-200">
-                <h2 className="text-2xl font-black text-purple-900 mb-4">✨ Analysis Details</h2>
+              {/* Score ring card */}
+              {report && (
+                <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl overflow-hidden">
+                  <ScoreRing score={report.atsScore} />
 
-                {selectedResume.analysisReport ? (
-                  <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-yellow-200 to-orange-200 p-4 rounded-2xl shadow">
-                      <p className="text-sm text-orange-700 font-bold">🎯 ATS Score</p>
-                      <p className="text-4xl font-black text-orange-600">
-                        {selectedResume.analysisReport.atsScore}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="font-black text-purple-900 mb-2">📝 Summary</h3>
-                      <p className="text-purple-700 text-sm font-semibold">
-                        {selectedResume.analysisReport.summary}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="font-black text-green-700 mb-2">✅ Strengths</h3>
-                      <ul className="space-y-1">
-                        {selectedResume.analysisReport.strengths?.slice(0, 3).map((s, i) => (
-                          <li key={i} className="text-sm text-green-700 font-semibold">💚 {s}</li>
+                  {/* Keywords */}
+                  {report.keywordSuggestions?.length > 0 && (
+                    <div className="px-6 pb-5 border-t border-purple-900/20 pt-5">
+                      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Suggested keywords</p>
+                      <div className="flex flex-wrap gap-2">
+                        {report.keywordSuggestions.map((kw, i) => (
+                          <span
+                            key={i}
+                            className="px-2.5 py-1 bg-purple-950/50 border border-purple-800/40 hover:border-purple-600/60 hover:bg-purple-900/40 rounded-full text-xs text-purple-300 transition-colors duration-150 cursor-default"
+                          >
+                            {kw}
+                          </span>
                         ))}
-                      </ul>
+                      </div>
                     </div>
+                  )}
 
-                    <div>
-                      <h3 className="font-black text-blue-700 mb-2">🚀 Improvements</h3>
-                      <ul className="space-y-1">
-                        {selectedResume.analysisReport.improvements?.slice(0, 3).map((imp, i) => (
-                          <li key={i} className="text-sm text-blue-700 font-semibold">💙 {imp}</li>
-                        ))}
-                      </ul>
-                    </div>
-
+                  {/* Delete */}
+                  <div className="px-6 pb-6 pt-4 border-t border-purple-900/20">
                     <button
                       onClick={() => handleDelete(selectedResume._id)}
-                      className="w-full bg-red-300 hover:bg-red-400 text-red-900 font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow mt-4"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-red-950/20 hover:bg-red-950/50 border border-red-900/30 hover:border-red-700/50 text-red-500 hover:text-red-300 rounded-xl transition-all duration-150 text-sm font-medium active:scale-95"
                     >
-                      <Trash2 className="w-4 h-4" />
-                      Delete Resume
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete resume
                     </button>
                   </div>
-                ) : (
-                  <p className="text-purple-700 text-sm font-semibold">No analysis data available</p>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+
+            {/* ── Right column ── */}
+            <div className="lg:col-span-2 flex flex-col gap-5">
+
+              {/* Placeholder */}
+              {!selectedResume ? (
+                <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl min-h-[280px] flex flex-col items-center justify-center gap-3 px-8 text-center">
+                  <div className="w-12 h-12 bg-purple-950/40 border border-purple-800/30 rounded-xl flex items-center justify-center mb-1">
+                    <FileText className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <p className="text-sm font-medium text-slate-400">No resume selected</p>
+                  <p className="text-xs text-slate-600 max-w-xs leading-relaxed">Click any resume on the left to view its full AI analysis report here.</p>
+                </div>
+
+              ) : !report ? (
+                <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl p-8">
+                  <p className="text-sm text-slate-500">No analysis data available for this resume.</p>
+                </div>
+
+              ) : (
+                <>
+                  {/* Summary */}
+                  <SectionCard title="Summary">
+                    <p className="text-sm text-slate-300 leading-relaxed">{report.summary}</p>
+                  </SectionCard>
+
+                  {/* Strengths + Weaknesses side by side on wider screens */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                    {report.strengths?.length > 0 && (
+                      <SectionCard title="Strengths" titleColor="text-emerald-400/80" borderColor="border-emerald-900/20">
+                        <ul className="space-y-3">
+                          {report.strengths.map((s, i) => (
+                            <li key={i} className="flex items-start gap-3">
+                              <div className="w-5 h-5 rounded-full bg-emerald-950/60 border border-emerald-800/40 flex items-center justify-center shrink-0 mt-0.5">
+                                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                              </div>
+                              <span className="text-sm text-slate-300 leading-relaxed">{s}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </SectionCard>
+                    )}
+
+                    {report.weaknesses?.length > 0 && (
+                      <SectionCard title="Weaknesses" titleColor="text-amber-400/80" borderColor="border-amber-900/20">
+                        <ul className="space-y-3">
+                          {report.weaknesses.map((w, i) => (
+                            <li key={i} className="flex items-start gap-3">
+                              <div className="w-5 h-5 rounded-full bg-amber-950/60 border border-amber-800/40 flex items-center justify-center shrink-0 mt-0.5">
+                                <AlertTriangle className="w-3 h-3 text-amber-400" />
+                              </div>
+                              <span className="text-sm text-slate-300 leading-relaxed">{w}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </SectionCard>
+                    )}
+                  </div>
+
+                  {/* Improvements */}
+                  {report.improvements?.length > 0 && (
+                    <SectionCard title="Recommended improvements" titleColor="text-purple-400/80" borderColor="border-purple-900/20">
+                      <ol className="space-y-4">
+                        {report.improvements.map((imp, i) => (
+                          <li key={i} className="flex items-start gap-4">
+                            <span className="w-6 h-6 rounded-lg bg-purple-950/60 border border-purple-800/40 flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-bold text-purple-400">
+                              {i + 1}
+                            </span>
+                            <span className="text-sm text-slate-300 leading-relaxed">{imp}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </SectionCard>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   )
 }
