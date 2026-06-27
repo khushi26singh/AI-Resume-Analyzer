@@ -11,7 +11,7 @@ export default function ResumeUpload({ onSuccess, onCancel }) {
   const [dragOver, setDragOver] = useState(false)
   const { token } = useContext(AuthContext)
 
-  const API_BASE_URL = ''
+  const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]

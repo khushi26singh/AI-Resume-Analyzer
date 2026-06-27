@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const API_BASE_URL = ''
+  const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
   useEffect(() => {
     if (token) {

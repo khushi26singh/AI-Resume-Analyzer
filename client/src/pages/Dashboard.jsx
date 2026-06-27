@@ -90,7 +90,7 @@ export default function Dashboard() {
   const [selectedResume, setSelectedResume] = useState(null)
   const [showUpload, setShowUpload] = useState(false)
 
-  const API_BASE_URL = ''
+  const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
@@ -150,7 +150,7 @@ export default function Dashboard() {
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {/* ── Page header ── */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Dashboard</h1>
             <p className="text-sm text-slate-500 mt-1">
@@ -241,7 +241,7 @@ export default function Dashboard() {
                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Your resumes</p>
                 </div>
 
-                <div className="divide-y divide-[#0F0A1E]">
+                <div className="divide-y divide-[#0F0A1E] max-h-[380px] overflow-y-auto custom-scrollbar">
                   {resumes.map((resume) => {
                     const isSelected = selectedResume?._id === resume._id
                     const score = resume.analysisReport?.atsScore
