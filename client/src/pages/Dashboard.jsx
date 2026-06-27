@@ -52,8 +52,8 @@ function ScoreRing({ score }) {
         {isHigh
           ? 'Your resume is well-optimized for ATS systems.'
           : isMid
-          ? 'A few targeted changes could significantly boost your score.'
-          : 'Consider a major revision to improve ATS compatibility.'}
+            ? 'A few targeted changes could significantly boost your score.'
+            : 'Consider a major revision to improve ATS compatibility.'}
       </p>
     </div>
   )
@@ -144,10 +144,10 @@ export default function Dashboard() {
   const report = selectedResume?.analysisReport
 
   return (
-    <div className="min-h-screen bg-[#0D0D12] text-slate-200">
+    <div className="min-h-screen w-full bg-[#0D0D12] text-slate-200 flex flex-col">
       <Navbar />
 
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="w-full flex-1 px-4 sm:px-6 lg:px-10 py-10">
 
         {/* ── Page header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -208,7 +208,7 @@ export default function Dashboard() {
             <p className="text-sm text-slate-500">Loading your resumes…</p>
           </div>
 
-        /* ── Empty state ── */
+          /* ── Empty state ── */
         ) : resumes.length === 0 ? (
           <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl py-24 px-8 text-center">
             <div className="w-16 h-16 bg-purple-950/60 border border-purple-800/40 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -228,12 +228,12 @@ export default function Dashboard() {
             </button>
           </div>
 
-        /* ── Main content ── */
+          /* ── Main content ── */
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch min-h-full">
 
             {/* ── Left column ── */}
-            <div className="flex flex-col gap-5">
+            <div className="lg:col-span-1 flex flex-col gap-5">
 
               {/* Resume list */}
               <div className="bg-[#1a1625] border border-purple-900/20 rounded-2xl overflow-hidden">
@@ -251,16 +251,14 @@ export default function Dashboard() {
                       <div
                         key={resume._id}
                         onClick={() => setSelectedResume(resume)}
-                        className={`group flex items-center justify-between px-5 py-4 cursor-pointer transition-all duration-150 ${
-                          isSelected
-                            ? 'bg-purple-950/30 border-l-2 border-l-purple-500 pl-[18px]'
-                            : 'hover:bg-purple-950/15 border-l-2 border-l-transparent'
-                        }`}
+                        className={`group flex items-center justify-between px-5 py-4 cursor-pointer transition-all duration-150 ${isSelected
+                          ? 'bg-purple-950/30 border-l-2 border-l-purple-500 pl-[18px]'
+                          : 'hover:bg-purple-950/15 border-l-2 border-l-transparent'
+                          }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-150 ${
-                            isSelected ? 'bg-purple-900/50' : 'bg-purple-950/40 group-hover:bg-purple-900/40'
-                          }`}>
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-150 ${isSelected ? 'bg-purple-900/50' : 'bg-purple-950/40 group-hover:bg-purple-900/40'
+                            }`}>
                             <FileText className="w-3.5 h-3.5 text-purple-400" />
                           </div>
                           <div className="min-w-0">
@@ -319,7 +317,7 @@ export default function Dashboard() {
             </div>
 
             {/* ── Right column ── */}
-            <div className="lg:col-span-2 flex flex-col gap-5">
+            <div className="lg:col-span-3 flex flex-col gap-5">
 
               {/* Placeholder */}
               {!selectedResume ? (
