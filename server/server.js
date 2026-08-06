@@ -32,7 +32,8 @@ app.use(cors({
     
     const isAllowed = allowedOrigins.includes(origin) || 
                       origin.endsWith(".vercel.app") || 
-                      /^http:\/\/localhost:\d+$/.test(origin);
+                      origin.endsWith(".app.github.dev") || 
+                      /^https?:\/\/localhost:\d+$/.test(origin);
                       
     if (isAllowed) {
       callback(null, true);
