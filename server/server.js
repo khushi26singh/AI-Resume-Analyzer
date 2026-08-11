@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const fs = require("fs");
+const path = require("path");
 const connectDB = require("./config/db");
 
 const authRoutes = require('./routes/authRoutes');
@@ -13,6 +15,12 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// Ensure the 'uploads' directory exists dynamically (fixes ENOENT errors on cloud platforms like Render)
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -27,7 +35,7 @@ if (process.env.FRONTEND_URL) {
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
     if (!origin) return callback(null, true);
     
     const isAllowed = allowedOrigins.includes(origin) || 
@@ -60,7 +68,6 @@ app.use('/api/auth', authRoutes);
 // Protected routes
 app.use('/api/analyze', protect, analyzeRoutes);
 app.use('/api/resumes', resumeRoutes);
-
 
 const PORT = process.env.PORT || 5000;
 
